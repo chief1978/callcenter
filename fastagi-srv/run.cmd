@@ -1,0 +1,1 @@
+java -cp asterisk-java.jar;mongo.jar;. org.asteriskjava.fastagi.DefaultAgiServer
