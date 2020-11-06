@@ -1,0 +1,47 @@
+## Версия docker-compose
+version: '3.7'
+services:
+    mysql:
+        image: mariadb
+        restart: always
+        ports:
+            - "3306:3306"
+        volumes:
+            - datavolume01:/var/lib/mysql
+        environment:
+           MYSQL_ROOT_PASSWORD: Change_me
+        networks:
+            - aster
+    nginx:
+        image: nginx:latest
+        restart: always
+        ports:
+            - "80:80"
+            - "443:443"
+        volumes:
+            - /opt/evocc/nginx/conf.d:/etc/nginx/
+            - /opt/evocc/asterisk/records:/var/www/mp3
+        networks:
+            - aster
+    fastagi:
+        image: java:8
+        ports:
+            - "4573:4573"
+        volumes:
+            - /opt/evocc/fastagi:/usr/src/myapp
+        networks:
+            - aster
+        command: ["java","-cp","/usr/src/myapp/asterisk-java.jar:mongo.jar:.","org.asteriskjava.fastagi.DefaultAgiServer"]
+    asterisk:
+        image: evocc/callcenterv1
+        restart: always
+        volumes:
+            - /opt/evocc/asterisk/etc:/etc/asterisk
+            - /opt/evocc/asterisk/sounds/mfc:/var/lib/asterisk/sounds/mfc
+            - /opt/evocc/asterisk/records:/var/spool/asterisk/monitor
+            - /opt/evocc/asterisk/odbc.ini:/etc/odbc.ini
+        network_mode: "host"
+networks:
+    aster:
+volumes:
+    datavolume01: {}
