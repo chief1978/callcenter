@@ -59,13 +59,13 @@ end
 
 -- рабочие часы
 w_time = {
---	{ ["day"] = 1 , ["w_time"] = { 8, 9, 10, 11, 12, 13 } },
-	{ ["day"] = 2 , ["w_time_start"] = "08:30:00",  ["w_time_end"] = "17:30:00",},
-	{ ["day"] = 3 , ["w_time_start"] = "08:30:00",  ["w_time_end"] = "17:30:00",},
-	{ ["day"] = 4 , ["w_time_start"] = "08:30:00",  ["w_time_end"] = "17:30:00",},
-	{ ["day"] = 5 , ["w_time_start"] = "08:30:00",  ["w_time_end"] = "17:30:00",},
-	{ ["day"] = 6 , ["w_time_start"] = "08:30:00",  ["w_time_end"] = "17:30:00",}
---	{ ["day"] = 7 , ["w_time"] = { 8, 9, 10, 11, 12, 13, 14, 15, 16 } }
+	{ ["day"] = 1 , ["w_time_start"] = "09:00:00",  ["w_time_end"] = "18:00:00",},
+	{ ["day"] = 2 , ["w_time_start"] = "09:00:00",  ["w_time_end"] = "18:00:00",},
+	{ ["day"] = 3 , ["w_time_start"] = "09:00:00",  ["w_time_end"] = "18:00:00",},
+	{ ["day"] = 4 , ["w_time_start"] = "09:00:00",  ["w_time_end"] = "18:00:00",},
+	{ ["day"] = 5 , ["w_time_start"] = "09:00:00",  ["w_time_end"] = "18:00:00",},
+	{ ["day"] = 6 , ["w_time_start"] = "09:00:00",  ["w_time_end"] = "19:00:00",},
+	{ ["day"] = 7 , ["w_time_start"] = "09:00:00",  ["w_time_end"] = "19:00:00",}
 }
 
 -- рабочие дни недели
@@ -77,8 +77,8 @@ h_date = {
 	{ ["month"] = 3, ["day"] = 8, ["sound"] = "/var/lib/asterisk/sounds/mfc/callcenter/no_work/1" },
 	{ ["month"] = 5, ["day"] = 11, ["sound"] = "/var/lib/asterisk/sounds/mfc/callcenter/no_work/1" },
 --	{ ["month"] = 5, ["day"] = 6, ["sound"] = "/var/lib/asterisk/sounds/mfc/callcenter/no_work/1" },
-	{ ["month"] = 11, ["day"] = 4, ["sound"] = "/var/lib/asterisk/sounds/mfc/callcenter/no_work/1" },
-	{ ["month"] = 11, ["day"] = 5, ["sound"] = "/var/lib/asterisk/sounds/mfc/callcenter/no_work/1" },
+--	{ ["month"] = 11, ["day"] = 4, ["sound"] = "/var/lib/asterisk/sounds/mfc/callcenter/no_work/1" },
+--	{ ["month"] = 11, ["day"] = 5, ["sound"] = "/var/lib/asterisk/sounds/mfc/callcenter/no_work/1" },
 	{ ["month"] = 1, ["day"] = 1, ["sound"] = "/var/lib/asterisk/sounds/mfc/callcenter/no_work/1" },
 	{ ["month"] = 1, ["day"] = 2, ["sound"] = "/var/lib/asterisk/sounds/mfc/callcenter/no_work/1" },
 	{ ["month"] = 1, ["day"] = 3, ["sound"] = "/var/lib/asterisk/sounds/mfc/callcenter/no_work/1" },
@@ -202,18 +202,15 @@ end
 
 -- IVR
 -- звуки
-local s1 = "/var/lib/asterisk/sounds/mfc/vnov/1"
-local s2 = "/var/lib/asterisk/sounds/mfc/vnov/2"
-local s3 = "/var/lib/asterisk/sounds/mfc/vnov/3"
-local s4 = "/var/lib/asterisk/sounds/mfc/vnov/4"
-local s5 = "/var/lib/asterisk/sounds/mfc/vnov/5"
-local s6 = "/var/lib/asterisk/sounds/mfc/vnov/6"
-local s6_1 = "/var/lib/asterisk/sounds/mfc/vnov/6.1"
-local s7 = "/var/lib/asterisk/sounds/mfc/vnov/7"
-local s8 = "/var/lib/asterisk/sounds/mfc/vnov/8"
-local s9 = "/var/lib/asterisk/sounds/mfc/vnov/9"
---local all_b = "/var/lib/asterisk/sounds/mfc/callcenter/all_busy"	-- вct заняты
-local info = "/var/lib/asterisk/sounds/mfc/inform"
+local w1 = "/var/lib/asterisk/sounds/mfc/w1"
+local w2 = "/var/lib/asterisk/sounds/mfc/w2"
+local w3 = "/var/lib/asterisk/sounds/mfc/w3"
+local w4 = "/var/lib/asterisk/sounds/mfc/w4"
+local w5 = "/var/lib/asterisk/sounds/mfc/w5"
+local n1 = "/var/lib/asterisk/sounds/mfc/n1"
+local n2 = "/var/lib/asterisk/sounds/mfc/n2"
+local n3 = "/var/lib/asterisk/sounds/mfc/n3"
+local n4 = "/var/lib/asterisk/sounds/mfc/n4"
 
 -- IVR привествие
 function ivr_hello(c, e)
@@ -223,19 +220,20 @@ function ivr_hello(c, e)
 	-- проверяем рабочее ли время
 	app.noop("ivr приветствие")
 	app.noop("проверяем рабочее ли время ...")
-	work, no_work_1_alt = check_w_time()
+	work, msg = check_w_time()
         if work == false then
-		if no_work_1_alt == nil then
-			no_work_1_alt = no_work_1
+		if msg == nil then
+			msg = n1
 		end
 		-- если нет
 		app.noop("... нет")
-		app.playback(s3, "noanswer")
-		app.hangup()
+--		app.playback(s3, "noanswer")
+--		app.hangup()
 	end
 	-- если да
 	app.noop("да")
-	app.playback(s1, "noanswer")
+	msg = d1
+	app.playback(msg, "noanswer")
 end
 
 -- IVR выбор меню
@@ -244,19 +242,19 @@ function ivr_start(c, e)
 	-- проверяем рабочее ли время
 	app.noop("ivr start")
 	app.noop("проверяем рабочее ли время ...")
-	work, no_work_1_alt = check_w_time()
+	work, msg = check_w_time()
 	if work == false then
-		if no_work_1_alt == nil then
-			no_work_1_alt = no_work_1
+		if msg == nil then
+			msg = n2 .. "&" .. n3 .. "&" .. n4
 		end
 		-- если нет запускаем информационное сообщение и IVR menu
 		app.noop(" ... нет, запускаем не_рабочее ivr меню")
-		-- коллбак and play message
-		-- get_callback(c,e)
+		msg = n2 .. "&" .. n3 .. "&" .. n4 .. "&" .. "silence/2"
+		app.background(msg,"","","nw_level_1")
 		app.hangup()
 	end
 	-- если да запускаем информационное сообщение и IVR menu
-	msg = s2 .. "&" .. "silence/5"
+	msg = w2 .. "&" .. w3 .. "&" .. w4 .. "&" .. w5 .. "silence/2"
 	app.noop(" ... да, запускаем рабочее ivr меню")
 	app.background(msg,"","","w_level_1")
 	app.hangup()
@@ -354,13 +352,13 @@ extensions = {
 
 	w_level_1 = {
 		["0"] = function(c, e)
-		    ivr_start(c, e)
+		    get_queue(c, e, "mfc")
 		end;
-		["2"] = function(c, e)
+		["1"] = function(c, e)
 		    get_status(c, e)
 		end;
-		["3"] = function(c, e)
-		    get_queue(c, e, "mfc")
+		["#"] = function(c,e)
+		    ivr_start(c,e)
 		end;
 		i = function(c,e)
 		    ivr_start(c,e)
@@ -374,7 +372,7 @@ extensions = {
 	};
 	
 	
-	ivr_menu_nw = {
+	w_level_1 = {
 		["1"] = function(c,e)
 		    get_status(c,e)
 		end;
