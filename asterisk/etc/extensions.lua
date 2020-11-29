@@ -155,7 +155,7 @@ end
 function record()
 	local tpath="/tmp/"
 	local dpath="/var/spool/asterisk/monitor/"
-	local bin="/usr/bin/lame"
+	local bin="/usr/local/bin/lame"
 	local params=""
 	local filename = channel.CHANNEL("UNIQUEID"):get() .. ".mp3"
 	local str1=string.sub(filename,1,3) .. "/" .. string.sub(filename,4,6) .. "/" .. string.sub(filename,7,10)
