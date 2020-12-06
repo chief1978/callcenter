@@ -34,7 +34,7 @@ services:
         restart: always
         volumes:
             - /opt/evocc/asterisk/etc:/etc/asterisk
-            - /opt/evocc/asterisk/sounds:/var/lib/asterisk/sounds
+            - datavolume02:/var/lib/asterisk/sounds
             - /opt/evocc/asterisk/records:/var/spool/asterisk/monitor
             - /opt/evocc/asterisk/odbc.ini:/etc/odbc.ini
             - /etc/localtime:/etc/localtime
@@ -45,5 +45,7 @@ networks:
         driver: default
         config:
           - subnet: 10.99.199.0/24
+            gateway: 10.99.199.1
 volumes:
     datavolume01: {}
+    datavolume02: {}
