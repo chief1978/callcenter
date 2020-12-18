@@ -10,7 +10,8 @@ services:
             - datavolume01:/var/lib/mysql
             - /etc/localtime:/etc/localtime
         environment:
-           MYSQL_ROOT_PASSWORD: HgJKKJkdkdsdlkjksldfjklsefjs8u894wijfdkslfj!fdfsdfsfsfgdsgdffdsgChngeMEIVeryStrong
+           MYSQL_ROOT_PASSWORD: CHangEmeasdasdddddddddDDDASD
+           MYSQL_DATABASE: asterisk
     nginx:
         image: nginx:latest
         restart: always
@@ -18,25 +19,25 @@ services:
             - "80:80"
             - "443:443"
         volumes:
-            - /opt/evocc/nginx/conf.d:/etc/nginx/
-            - /opt/evocc/asterisk/records:/var/www/mp3
+            - ./nginx/conf.d:/etc/nginx/
+            - ./asterisk/records:/var/www/mp3
             - /etc/localtime:/etc/localtime
     fastagi:
         image: java:8
         ports:
             - "4573:4573"
         volumes:
-            - /opt/evocc/fastagi:/usr/src/myapp
+            - ./fastagi:/usr/src/myapp
             - /etc/localtime:/etc/localtime
         command: bash -c "cd /usr/src/myapp && java -cp asterisk-java.jar:mongo.jar:. org.asteriskjava.fastagi.DefaultAgiServer"
     asterisk:
         image: evocc/callcenterv1
         restart: always
         volumes:
-            - /opt/evocc/asterisk/etc:/etc/asterisk
-            - datavolume02:/var/lib/asterisk/sounds
-            - /opt/evocc/asterisk/records:/var/spool/asterisk/monitor
-            - /opt/evocc/asterisk/odbc.ini:/etc/odbc.ini
+            - ./asterisk/etc:/etc/asterisk
+            - ./asterisk/sounds/mfc:/var/lib/asterisk/sounds/mfc
+            - ./asterisk/records:/var/spool/asterisk/monitor
+            - ./asterisk/odbc.ini:/etc/odbc.ini
             - /etc/localtime:/etc/localtime
         network_mode: "host"
 networks:
@@ -48,4 +49,3 @@ networks:
             gateway: 10.99.199.1
 volumes:
     datavolume01: {}
-    datavolume02: {}
