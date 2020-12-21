@@ -44,7 +44,7 @@ CREATE TABLE `cdr` (
   `answer` datetime NOT NULL,
   `end` datetime NOT NULL,
   `recordingfile` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  `val` int(11) NOT NULL DEFAULT -1,
+  `val` TINYINT NOT NULL DEFAULT 0,
   `ivr_choose` int(11) NOT NULL DEFAULT 0,
   `ivr_quit` datetime DEFAULT NULL,
   `ivr_chk_quantity` int(11) NOT NULL DEFAULT 0,
