@@ -10,8 +10,7 @@ services:
             - datavolume01:/var/lib/mysql
             - /etc/localtime:/etc/localtime
         environment:
-           MYSQL_ROOT_PASSWORD: CHangEmeasdasdddddddddDDDASD
-           MYSQL_DATABASE: asterisk
+           MYSQL_ROOT_PASSWORD: Ghange_me
     nginx:
         image: nginx:latest
         restart: always
@@ -35,7 +34,8 @@ services:
         restart: always
         volumes:
             - ./asterisk/etc:/etc/asterisk
-            - ./asterisk/sounds/mfc:/var/lib/asterisk/sounds/mfc
+            - ./asterisk/outgoing:/var/spool/asterisk/outgoing
+            - datavolume02:/var/lib/asterisk/sounds
             - ./asterisk/records:/var/spool/asterisk/monitor
             - ./asterisk/odbc.ini:/etc/odbc.ini
             - /etc/localtime:/etc/localtime
@@ -45,7 +45,7 @@ networks:
       ipam:
         driver: default
         config:
-          - subnet: 10.99.199.0/24
-            gateway: 10.99.199.1
+          - subnet: 10.97.199.0/24
 volumes:
     datavolume01: {}
+    datavolume02: {}

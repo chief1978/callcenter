@@ -1,0 +1,68 @@
+## Версия docker-compose
+version: '3.7'
+services:
+    prometheus:
+        image: prom/prometheus:latest
+        restart: unless-stopped
+        ports:
+            - 9090:9090
+        volumes:
+            - ./prometheus:/etc/prometheus
+        command: --web.enable-lifecycle  --config.file=/etc/prometheus/prometheus.yml
+        links:
+            - cadvisor:cadvisor
+            - node-exporter:node-exporter
+        networks:
+            - prom
+    cadvisor:
+        image: google/cadvisor:latest
+        restart: unless-stopped
+        ports:
+            - 8080:8080
+        volumes:
+            - /:/rootfs:ro
+            - /var/run:/var/run:rw
+            - /sys:/sys:ro
+            - /var/lib/docker/:/var/lib/docker:ro
+        networks:
+            - prom
+    node-exporter:
+        image: prom/node-exporter:latest
+        restart: unless-stopped
+        ports:
+            - 9100:9100
+        networks:
+            - prom 
+    grafana:
+        image: grafana/grafana:latest
+        restart: unless-stopped
+        container_name: grafana
+        ports:
+            - 3000:3000
+        links:
+            - prometheus:prometheus
+        external_links:
+            - mysql:mysql
+        networks:
+            - evocc_default
+            - prom
+        volumes:
+            - ./grafana/provisioning:/etc/grafana/provisioning
+            - ./grafana/plugins:/var/lib/grafana/plugins
+        environment:
+            - GF_PLUGIN_DIR=/etc/grafana/provisioning/plugins
+            - GF_SECURITY_ADMIN_PASSWORD=eevei7Ae
+            - GF_USERS_ALLOW_SIGN_UP=false
+            - GF_SERVER_DOMAIN=myrul.com
+            - GF_SMTP_ENABLED=true
+            - GF_SMTP_HOST=smtp.gmail.com:587
+            - GF_SMTP_USER=myadrress@gmail.com
+            - GF_SMTP_PASSWORD=mypassword
+            - GF_SMTP_FROM_ADDRESS=myaddress@gmail.com
+            - DS_PROMETHEUS=prometheus
+            - GF_SERVER_ROOT_URL=%(protocol)s://%(domain)s:%(http_port)s/stat/
+            - GF_SERVER_SERVE_FROM_SUB_PATH=true
+networks:
+    prom:
+    evocc_default:
+      external: true
