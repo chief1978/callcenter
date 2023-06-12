@@ -30,10 +30,6 @@ RUN apk add --ino-cache \
         alpine-sdk \
         python-dev
 
-ENV QPANEL_USER qpanel
-ENV QPANEL_PWD GhbjhbntN132
-ENV ASTERISK_HOST 10.10.156.205
-
 WORKDIR /qpanel
 
 EXPOSE 5000

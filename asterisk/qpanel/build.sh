@@ -1,1 +1,0 @@
-docker build --tag qpanel:v1 .

@@ -7,10 +7,10 @@ services:
         ports:
             - "3306:3306"
         volumes:
-            - datavolume01:/var/lib/mysql
+            - ./db:/var/lib/mysql
             - /etc/localtime:/etc/localtime
         environment:
-           MYSQL_ROOT_PASSWORD: Ghange_me
+            MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     nginx:
         image: nginx:latest
         restart: always
@@ -30,22 +30,33 @@ services:
             - /etc/localtime:/etc/localtime
         command: bash -c "cd /usr/src/myapp && java -cp asterisk-java.jar:mongo.jar:. org.asteriskjava.fastagi.DefaultAgiServer"
     asterisk:
-        image: evocc/callcenterv1
+        image: mfc/asterisk
+        build: ./build
         restart: always
         volumes:
             - ./asterisk/etc:/etc/asterisk
             - ./asterisk/outgoing:/var/spool/asterisk/outgoing
-            - datavolume02:/var/lib/asterisk/sounds
+            - ./asterisk/sounds:/var/lib/asterisk/sounds
             - ./asterisk/records:/var/spool/asterisk/monitor
+            - ./asterisk/logs:/var/log/asterisk
             - ./asterisk/odbc.ini:/etc/odbc.ini
             - /etc/localtime:/etc/localtime
         network_mode: "host"
+    qpanel:
+        image: mfc/qpanel
+        build: ./qpanel
+        restart: always
+        ports:
+            - 5000:5000
+        volumes:
+            - ./qpanel/config.ini:/qpanel/config.ini
+        environment:
+            QPANEL_USER: ${QPANEL_USER}
+            QPANEL_PWD: ${QPANEL_PWD}
+            ASTERISK_HOST: ${ASTERISK_HOST}
 networks:
     default:
       ipam:
         driver: default
         config:
           - subnet: 10.97.199.0/24
-volumes:
-    datavolume01: {}
-    datavolume02: {}
